@@ -65,6 +65,7 @@ class Visualizer(object):
         transform = self.computeFullTransformation()
         for i in range(len(points)):
             new_points[i] = (transform@detection.affine_transform)@points[i]
+        new_center = (transform@detection.affine_transform)[:3, 3]
         self.ax.plot([new_points[0,0], new_points[1,0]], [new_points[0,1], new_points[1,1]], [new_points[0,2], new_points[1,2]], color=self.colors[detection.id%len(self.colors)])  # P12
         self.ax.plot([new_points[1,0], new_points[2,0]], [new_points[1,1], new_points[2,1]], [new_points[1,2], new_points[2,2]], color=self.colors[detection.id%len(self.colors)])  # P23
         self.ax.plot([new_points[2,0], new_points[3,0]], [new_points[2,1], new_points[3,1]], [new_points[2,2], new_points[3,2]], color=self.colors[detection.id%len(self.colors)])  # P34
@@ -78,7 +79,8 @@ class Visualizer(object):
         self.ax.plot([new_points[2,0], new_points[6,0]], [new_points[2,1], new_points[6,1]], [new_points[2,2], new_points[6,2]], color=self.colors[detection.id%len(self.colors)])  # P37
         self.ax.plot([new_points[3,0], new_points[7,0]], [new_points[3,1], new_points[7,1]], [new_points[3,2], new_points[7,2]], color=self.colors[detection.id%len(self.colors)])  # P48
         # draw center point
-        self.ax.scatter((transform@detection.affine_transform)[0, 3], (transform@detection.affine_transform)[1, 3], (transform@detection.affine_transform)[2, 3], color=self.colors[detection.id%len(self.colors)], linewidth=2)
+        self.ax.scatter(new_center[0], new_center[1], new_center[2], color=self.colors[detection.id%len(self.colors)], linewidth=2)
+        self.ax.text(new_center[0], new_center[1], new_center[2]+0.1, str(detection.id), color=self.colors[detection.id%len(self.colors)])
         self.ax.set_xlabel('X')
         self.ax.set_ylabel('Y')
         self.ax.set_zlabel('Z')
